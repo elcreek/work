@@ -26,6 +26,8 @@ symbols = exchange.symbols
 def ccxt_data(symbol='ETH/USDT', timeframe ='4h', limit=111):
     global data
     # global fullname
+    # i use globl for data variable even thogh the function returns data variable
+    # because jupyter cells are ceperated from each other
 
     m_symbol = symbol.replace("/","_")
     outname = m_symbol+'_'+timeframe+'_'+f'{limit}'+'.csv'
@@ -37,7 +39,7 @@ def ccxt_data(symbol='ETH/USDT', timeframe ='4h', limit=111):
 
     if not (os.path.exists(fullname)):
 
-        bars = exchange.fetch_ohlcv(symbol, timeframe, limit)
+        bars = exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
         # must use bars[:-1] because arrgrelextrema will see the last candle wich have not closed yet
         data = pd.DataFrame(bars[:], columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
         data['Time'] = pd.to_datetime(data['Time'], unit='ms')
@@ -49,11 +51,25 @@ def ccxt_data(symbol='ETH/USDT', timeframe ='4h', limit=111):
     else:
         tem_data = pd.read_csv(fullname, index_col='Time')
         # last_candle_time=tem_data['Time'].max()
-        last_candle_time_plus=pd.to_datetime(tem_data.index[-1]) + pd.Timedelta(12, unit="h")
-        if (last_candle_time_plus) >= pd.to_datetime(datetime.now()) :
+        # print(type(tem_data.index[-1]))
+        # c =pd.to_datetime(tem_data.index[-1])
+        # d =  c- datetime.now()
+        # print(c, d)
+        if tem_data.empty:
+            os.remove(fullname)
+
+        if pd.to_datetime(tem_data.index[-1]) < (pd.to_datetime(datetime.now()) - pd.Timedelta(8, unit="h")):
+            os.remove(fullname)
+        
+        elif pd.to_datetime(tem_data.index[-1]) + pd.Timedelta(4, unit="h") > pd.to_datetime(datetime.now()):
             data = tem_data
+        # ll=pd.to_datetime(datetime.now()) - pd.Timedelta(4, unit="h")
+
+        # if ll in tem_data.index:
+        #     if ll == tem_data.index[-1]:
+        #         data = tem_data
         else:
-            bars = exchange.fetch_ohlcv(symbol, timeframe, limit)
+            bars = exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
             data = pd.DataFrame(bars[:], columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
             data['Time'] = pd.to_datetime(data['Time'], unit='ms')
             data.set_index('Time', inplace=True)
@@ -63,3 +79,5 @@ def ccxt_data(symbol='ETH/USDT', timeframe ='4h', limit=111):
             
    
     return data
+
+# ccxt_data()
