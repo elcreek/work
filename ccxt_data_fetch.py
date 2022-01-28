@@ -32,17 +32,18 @@ pairs=[n for n in pairs if all(m not in n for m in unwanted)]
 _pairs = ["ATOM/USDT"]
 
 # always put the list out of the loop or everthing will be wiped out each turn
-order=5
-timeframe = '4h'
-limit = 11111
-rows = []
+
+timeframe = '1d'
+limit = 1111
+
 td =datetime.now().strftime('%Y-%m-%d_%H')
 
 
-for symbol in tqdm(_pairs):
+for symbol in tqdm(pairs):
 
     m_symbol = symbol.replace("/","_")
-    outname = m_symbol+'_'+timeframe+'_'+f'{limit}'+'.csv'
+    # outname = m_symbol+'_'+timeframe+'_'+f'{limit}'+'.csv'
+    outname = f"{m_symbol}_{timeframe}.csv"
 
     outdir=f"{os.getcwd()}/data/{td}/{timeframe}"
     # outdir=f"{os.getenv('HOME')}/data/{td}/{timeframe}"
@@ -55,7 +56,7 @@ for symbol in tqdm(_pairs):
     if not (os.path.exists(fullname)):
         bars = exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
         # must use bars[:-1] because arrgrelextrema will see the last candle wich have not closed yet
-        data = pd.DataFrame(bars[:], columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
+        data = pd.DataFrame(bars[:-1], columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
         data['Time'] = pd.to_datetime(data['Time'], unit='ms')
         data.set_index('Time', inplace=True)
 
