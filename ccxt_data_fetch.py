@@ -3,8 +3,8 @@ import os
 import pandas as pd
 from datetime import datetime, timedelta
 from tqdm import tqdm
-from functools import partial
-from pathlib import Path
+# from functools import partial
+# from pathlib import Path
 
 
 exchange = ccxt.binance()
@@ -29,16 +29,17 @@ for s in symbols:
 pairs=[n for n in pairs if all(m not in n for m in unwanted)]
 
 
-_pairs = ["ETH/USDT","ATOM/USDT"]
+_pairs = ["ATOM/USDT"]
 
 # always put the list out of the loop or everthing will be wiped out each turn
 order=5
-timeframe = '1d'
-limit = 111
+timeframe = '4h'
+limit = 11111
 rows = []
 td =datetime.now().strftime('%Y-%m-%d_%H')
-# global tof
-for symbol in tqdm(pairs):
+
+
+for symbol in tqdm(_pairs):
 
     m_symbol = symbol.replace("/","_")
     outname = m_symbol+'_'+timeframe+'_'+f'{limit}'+'.csv'
