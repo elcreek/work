@@ -33,19 +33,20 @@ _pairs = ["ATOM/USDT"]
 
 # always put the list out of the loop or everthing will be wiped out each turn
 
-timeframe = '1d'
-limit = 1111
+timeframe = '4h'
+limit = 1003
 
-td =datetime.now().strftime('%Y-%m-%d_%H')
+# td =datetime.now().strftime('%Y-%m-%d_%H')
 
 
 for symbol in tqdm(pairs):
 
-    m_symbol = symbol.replace("/","_")
+    m_symbol = symbol.replace("/","")
     # outname = m_symbol+'_'+timeframe+'_'+f'{limit}'+'.csv'
     outname = f"{m_symbol}_{timeframe}.csv"
 
-    outdir=f"{os.getcwd()}/data/{td}/{timeframe}"
+    # outdir=f"{os.getcwd()}/data/{td}/{timeframe}"
+    outdir=f"{os.getcwd()}/data/{timeframe}"
     # outdir=f"{os.getenv('HOME')}/data/{td}/{timeframe}"
     fullname = os.path.join(outdir, outname) 
    
@@ -53,15 +54,24 @@ for symbol in tqdm(pairs):
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
-    if not (os.path.exists(fullname)):
-        bars = exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
-        # must use bars[:-1] because arrgrelextrema will see the last candle wich have not closed yet
-        data = pd.DataFrame(bars[:-1], columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
-        data['Time'] = pd.to_datetime(data['Time'], unit='ms')
-        data.set_index('Time', inplace=True)
+    # if not (os.path.exists(fullname)):
+    #     bars = exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
+    #     # must use bars[:-1] because arrgrelextrema will see the last candle wich have not closed yet
+    #     data = pd.DataFrame(bars[:-1], columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
+    #     data['Time'] = pd.to_datetime(data['Time'], unit='ms')
+    #     data.set_index('Time', inplace=True)
 
-        data.to_csv(fullname) 
-        # print('fetching new data', symbol)
+    #     data.to_csv(fullname) 
+    #     # print('fetching new data', symbol)
+
+    bars = exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
+    # must use bars[:-1] because arrgrelextrema will see the last candle wich have not closed yet
+    data = pd.DataFrame(bars[:-1], columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
+    data['Time'] = pd.to_datetime(data['Time'], unit='ms')
+    data.set_index('Time', inplace=True)
+
+    data.to_csv(fullname) 
+    # print('fetching new data', symbol)
     
 
  
