@@ -17,7 +17,7 @@ symbols = exchange.symbols
 t = 'USDT'
 pairs = []
 # global unwanted
-unwanted = ["GYEN","UP/","DOWN/","USDS","USDT/","USDSB","SUSD",
+unwanted = ["BTT","GYEN","UP/","DOWN/","USDS","USDT/","USDSB","SUSD",
 "NCASH/ETH","DNT/ETH","BCN/ETH","UST","ETH/","BKRW","VAI","RUB",
 "NGN","DAI","BIDR","BEAR", "BULL", "PAX", "TUSD", "UMA", "USDC",
  "USDP", "BUSD/", "EUR", "GBP", "TRY", "AUD","BRL", "BVND"]
