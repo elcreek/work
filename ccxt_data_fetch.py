@@ -33,7 +33,7 @@ _pairs = ["ATOM/USDT"]
 
 # always put the list out of the loop or everthing will be wiped out each turn
 
-timeframe = '4h'
+timeframe = '1h'
 limit = 1003
 
 # td =datetime.now().strftime('%Y-%m-%d_%H')
