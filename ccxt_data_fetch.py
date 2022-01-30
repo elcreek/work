@@ -3,6 +3,8 @@ import os
 import pandas as pd
 from datetime import datetime, timedelta
 from tqdm import tqdm
+# import sys
+# import shutil
 # from functools import partial
 # from pathlib import Path
 
@@ -33,47 +35,43 @@ _pairs = ["ATOM/USDT"]
 
 # always put the list out of the loop or everthing will be wiped out each turn
 
-timeframe = '1h'
-limit = 1003
+timeframes = ["1h", "4h", "1d"]
+# limit = 1003
 
 # td =datetime.now().strftime('%Y-%m-%d_%H')
 
+for timeframe in timeframes:
 
-for symbol in tqdm(pairs):
+    for symbol in tqdm(pairs):
 
-    m_symbol = symbol.replace("/","")
-    # outname = m_symbol+'_'+timeframe+'_'+f'{limit}'+'.csv'
-    outname = f"{m_symbol}_{timeframe}.csv"
+        m_symbol = symbol.replace("/","")
+        outname = f"{m_symbol}_{timeframe}.csv"
 
-    # outdir=f"{os.getcwd()}/data/{td}/{timeframe}"
-    outdir=f"{os.getcwd()}/data/{timeframe}"
-    # outdir=f"{os.getenv('HOME')}/data/{td}/{timeframe}"
-    fullname = os.path.join(outdir, outname) 
-   
+        # outdir=f"{os.getcwd()}/data/{td}/{timeframe}"
+        outdir=f"{os.getcwd()}/data/{timeframe}"
+        # outdir=f"{os.getenv('HOME')}/data/{td}/{timeframe}"
+        fullname = os.path.join(outdir, outname) 
 
-    if not os.path.exists(outdir):
-        os.makedirs(outdir)
+        # remove old dir
+        # if os.path.exists(outdir):
+        #     shutil.rmtree(outdir)
 
-    # if not (os.path.exists(fullname)):
-    #     bars = exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
-    #     # must use bars[:-1] because arrgrelextrema will see the last candle wich have not closed yet
-    #     data = pd.DataFrame(bars[:-1], columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
-    #     data['Time'] = pd.to_datetime(data['Time'], unit='ms')
-    #     data.set_index('Time', inplace=True)
+        if not os.path.exists(outdir):
+            os.makedirs(outdir)
 
-    #     data.to_csv(fullname) 
-    #     # print('fetching new data', symbol)
+        bars = exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=1001)
+        # must use bars[:-1] because arrgrelextrema will see the last candle wich have not closed yet
+        data = pd.DataFrame(bars[:-1], columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
+        data['Time'] = pd.to_datetime(data['Time'], unit='ms')
+        data.set_index('Time', inplace=True)
+        if len(data) < 20:
+            print("data less than 20 candles for ", symbol)
+            continue
 
-    bars = exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
-    # must use bars[:-1] because arrgrelextrema will see the last candle wich have not closed yet
-    data = pd.DataFrame(bars[:-1], columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
-    data['Time'] = pd.to_datetime(data['Time'], unit='ms')
-    data.set_index('Time', inplace=True)
-
-    data.to_csv(fullname) 
-    # print('fetching new data', symbol)
+        data.to_csv(fullname) 
+        # print('fetching new data', symbol)
     
 
- 
+
   
             
