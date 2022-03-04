@@ -3517,3 +3517,7 @@ data/2h/ZECUSDT_2h.csv
 data/2h/ZENUSDT_2h.csv
 data/2h/ZILUSDT_2h.csv
 data/2h/ZRXUSDT_2h.csv
+graphs/ETCUSDT trends.html
+__pycache__/Plotter.cpython-310.pyc
+suppres.svg
+.gitignore
