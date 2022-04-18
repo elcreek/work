@@ -3521,3 +3521,4 @@ graphs/ETCUSDT trends.html
 __pycache__/Plotter.cpython-310.pyc
 suppres.svg
 .gitignore
+config.py
