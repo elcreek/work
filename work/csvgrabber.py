@@ -9,8 +9,8 @@ from flask import Flask, render_template
 import tqdm
 from binance import Client
 
-api_key = '0Tbt22Cx2LDoKFIKRdabh4BXmVOzJggkhvCJ9GvgyzYT1wqfpgTqilOIYJrqkc5l'
-api_secret = 'ucOlFt3RB72gzAoxaHKFTNFTTIUDcayK8qMQFkvzqOuugtuqG4WqQbknmcFZvpfR'
+api_key = ''
+api_secret = ''
 
 client = Client(api_key, api_secret)
 
