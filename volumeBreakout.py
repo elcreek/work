@@ -50,11 +50,49 @@ def get_historical_ohlc_data(symbol,days=35,interval='1h'):
     return df[:-1]
 
 
+def clc(df, symbol):
+    df['prevvol'] = df['volume'].shift()
+    df= df.dropna()
+
+    ###########################
+
+    df['prevvol'] = pd.to_numeric(df['prevvol'])
+    df['volume'] = pd.to_numeric(df['volume'])
+
+    df['change'] = (df['volume'] / df['prevvol']) - 1
+
+    ##################################
+
+    df['stdev'] = df['change'].rolling(20).std()
+
+    ####################
+
+    df['prevstd'] = df['stdev'].shift()
+
+    df['prevstd'] = pd.to_numeric(df['prevstd'])
+    df['change'] = pd.to_numeric(df['change'])
+
+    df['difference'] = df['change'] / df['prevstd']
+
+    Treshold = 5
+    zero = 0
+    df['signal'] = df['difference'].abs()
+    df= df.dropna()
+
+    df['leveluphi'] = np.where(df['signal'] > Treshold,1,0)
+    # df['leveluplo'] = np.where(df['signal'] > Treshold,2,0)
+
+    # if (df['leveluphi'].values == 1) or (df['leveluplo'].values == 2) :
+    #     candy.append(f"{symbol}")
+
+    print(symbol, df[df['signal'] > Treshold])
+
+
 
 
 timeframes = ["1h"]
 
-pairs= ['ARUSDT', 'SYSUSDT', 'CKBUSDT', 'CTXCUSDT', 'DOGEUSDT', 'ETCUSDT', 'FILUSDT', 'FIROUSDT', 'LTCUSDT', 'KMDUSDT', 'RVNUSDT', 'SCUSDT', 'XLMUSDT', 'XMRUSDT', 'XRPUSDT', 'ZECUSDT', 'ZENUSDT', 'DGBUSDT', 'DASHUSDT', 'BCHUSDT', 'RNDRUSDT', 'VETUSDT', 'VTHOUSDT', 'KDAUSDT', 'NKNUSDT', 'ARBTC', 'SYSBTC', 'CTXCBTC', 'DOGEBTC', 'ETCBTC', 'FILBTC', 'FIROBTC', 'LTCBTC', 'KMDBTC', 'RVNBTC', 'XLMBTC', 'XMRBTC', 'XRPBTC', 'ZECBTC', 'ZENBTC', 'DGBBTC', 'DASHBTC', 'BCHBTC', 'RNDRBTC', 'VETBTC', 'KDABTC', 'NKNBTC']
+pairs= ['ARUSDT', 'SYSUSDT', 'CKBUSDT', 'CTXCUSDT', 'DOGEUSDT', 'ETCUSDT', 'FILUSDT', 'FIROUSDT', 'LTCUSDT', 'KMDUSDT', 'RVNUSDT', 'SCUSDT', 'XLMUSDT', 'XMRUSDT', 'XRPUSDT', 'ZECUSDT', 'ZENUSDT', 'DGBUSDT', 'DASHUSDT', 'BCHUSDT', 'RNDRUSDT', 'VETUSDT', 'VTHOUSDT', 'KDAUSDT', 'NKNUSDT']#, 'ARBTC', 'SYSBTC', 'CTXCBTC', 'DOGEBTC', 'ETCBTC', 'FILBTC', 'FIROBTC', 'LTCBTC', 'KMDBTC', 'RVNBTC', 'XLMBTC', 'XMRBTC', 'XRPBTC', 'ZECBTC', 'ZENBTC', 'DGBBTC', 'DASHBTC', 'BCHBTC', 'RNDRBTC', 'VETBTC', 'KDABTC', 'NKNBTC']
 # pairs=['BCHUSDT']
 candy =[]
 
@@ -64,42 +102,8 @@ for timeframe in timeframes:
 
         df=get_historical_ohlc_data(symbol, interval=timeframe)
             
-        # clc(df, symbol)
-        df['prevvol'] = df['volume'].shift()
-        df= df.dropna()
+        clc(df, symbol)
 
-        ###########################
-
-        df['prevvol'] = pd.to_numeric(df['prevvol'])
-        df['volume'] = pd.to_numeric(df['volume'])
-
-        df['change'] = (df['volume'] / df['prevvol']) - 1
-
-        ##################################
-
-        df['stdev'] = df['change'].rolling(20).std()
-
-        ####################
-
-        df['prevstd'] = df['stdev'].shift()
-
-        df['prevstd'] = pd.to_numeric(df['prevstd'])
-        df['change'] = pd.to_numeric(df['change'])
-
-        df['difference'] = df['change'] / df['prevstd']
-
-        Treshold = 5
-        zero = 0
-        df['signal'] = df['difference'].abs()
-        df= df.dropna()
-
-        df['leveluphi'] = np.where(df['signal'] > Treshold,1,0)
-        # df['leveluplo'] = np.where(df['signal'] > Treshold,2,0)
-
-        # if (df['leveluphi'].values == 1) or (df['leveluplo'].values == 2) :
-        #     candy.append(f"{symbol}")
-
-        print(symbol, df[df['signal'] > Treshold])
 
 # print(df[:])
 # print(candy)
