@@ -10,8 +10,8 @@ from scipy.signal import argrelextrema
 
 client = Client()
 
-
-API_KEY = '5336229182:AAFZG8_9m3RaNOlZVZ0oqmPz_xEdk80mXUQ'
+import config
+API_KEY = config.API_KEY
 bot = telebot.TeleBot(API_KEY)
 
 
